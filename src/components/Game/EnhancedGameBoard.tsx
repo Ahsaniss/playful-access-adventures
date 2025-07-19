@@ -187,11 +187,14 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
 
   // Voice command handler
   const handleVoiceCommand = useCallback((command: string, value?: string) => {
+    console.log('Voice command received in game:', command, value); // Debug log
+    
     switch (command) {
       case 'select':
         if (value) {
           const index = parseInt(value) - 1;
           if (index >= 0 && index < options.length) {
+            console.log('Selecting option:', index + 1, options[index]); // Debug log
             handlePieceClick(options[index]);
           }
         }
@@ -200,7 +203,7 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
         speak(`Find the ${currentTarget?.color} ${currentTarget?.shape}`, 'high');
         break;
       case 'help':
-        const helpMessage = `You are playing level ${level} with a score of ${score}. Find the ${currentTarget?.color} ${currentTarget?.shape}. There are ${options.length} options numbered 1 through ${options.length}.`;
+        const helpMessage = `You are playing level ${level} with a score of ${score}. Find the ${currentTarget?.color} ${currentTarget?.shape}. There are ${options.length} options numbered 1 through ${options.length}. Say a number to select, or say "repeat" to hear the target again.`;
         speak(helpMessage, 'high');
         break;
       case 'next':
@@ -275,8 +278,8 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
     generateRound();
     
     const welcomeMessage = accessibilitySettings.screenReaderMode
-      ? 'Welcome to Inclusive Play, an accessible shape and color matching game. Listen carefully and find the matching shape and color from the available options.'
-      : 'Welcome to Inclusive Play! Find the matching shape and color.';
+      ? 'Welcome to Inclusive Play, an accessible shape and color matching game. Listen carefully and find the matching shape and color from the available options. You can use voice commands by saying numbers like "1" or "2", or saying "help" for instructions.'
+      : 'Welcome to Inclusive Play! Find the matching shape and color. Use voice commands or click to play.';
     
     speak(welcomeMessage, 'high');
   }, []);
@@ -305,34 +308,102 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
 
   // Render shape with accessibility enhancements
   const renderShape = (shape: Shape, color: Color, size: string = "w-16 h-16", isHighlighted: boolean = false) => {
-    const colorClass = `bg-game-${color}`;
-    const baseClasses = `${size} ${colorClass} transition-all duration-300`;
-    const highlightClasses = isHighlighted ? 'ring-4 ring-primary animate-pulse-success' : '';
-    const contrastClasses = accessibilitySettings.isHighContrast ? 'border-4 border-black' : 'shadow-lg';
+    // Map colors to proper CSS values
+    const getColorStyle = (color: Color) => {
+      const colorMap = {
+        red: 'hsl(0, 85%, 55%)',
+        blue: 'hsl(220, 85%, 55%)', 
+        green: 'hsl(120, 60%, 50%)',
+        yellow: 'hsl(45, 100%, 55%)',
+        purple: 'hsl(280, 85%, 60%)',
+        orange: 'hsl(25, 90%, 55%)'
+      };
+      return colorMap[color];
+    };
+
+    const baseClasses = `${size} game-shape transition-all duration-300 flex-shrink-0`;
+    const highlightClasses = isHighlighted ? 'highlighted animate-gentle-pulse' : '';
+    const contrastClasses = accessibilitySettings.isHighContrast ? 'border-2 border-black' : 'shadow-md';
     
     const finalClasses = `${baseClasses} ${highlightClasses} ${contrastClasses}`;
     
     const shapeStyle = {
-      transform: `scale(${accessibilitySettings.fontSize / 100})`,
+      backgroundColor: getColorStyle(color),
+      minWidth: '4rem',
+      minHeight: '4rem',
     };
 
     switch (shape) {
       case 'circle':
-        return <div className={`${finalClasses} rounded-full`} style={shapeStyle} />;
+        return (
+          <div 
+            className={`${finalClasses} rounded-full flex items-center justify-center`} 
+            style={shapeStyle}
+            title={`${color} circle`}
+            aria-label={`${color} circle shape`}
+          >
+            {accessibilitySettings.isHighContrast && (
+              <span className="text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">●</span>
+            )}
+          </div>
+        );
       case 'square':
-        return <div className={`${finalClasses} rounded-lg`} style={shapeStyle} />;
+        return (
+          <div 
+            className={`${finalClasses} rounded-lg flex items-center justify-center`} 
+            style={shapeStyle}
+            title={`${color} square`}
+            aria-label={`${color} square shape`}
+          >
+            {accessibilitySettings.isHighContrast && (
+              <span className="text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">■</span>
+            )}
+          </div>
+        );
       case 'triangle':
-        return <div className={`${size} relative`} style={shapeStyle}>
-          <div className={`absolute inset-0 ${colorClass} ${contrastClasses}`}
-               style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
-          {isHighlighted && <div className="absolute inset-0 ring-4 ring-primary rounded-sm" />}
-        </div>;
+        return (
+          <div 
+            className={`${size} relative flex items-center justify-center flex-shrink-0`} 
+            style={{ minWidth: '4rem', minHeight: '4rem' }}
+            title={`${color} triangle`}
+            aria-label={`${color} triangle shape`}
+          >
+            <div 
+              className={`absolute inset-1 ${contrastClasses} transition-all duration-300`}
+              style={{ 
+                clipPath: 'polygon(50% 10%, 10% 90%, 90% 90%)',
+                backgroundColor: getColorStyle(color)
+              }} 
+            />
+            {isHighlighted && <div className="absolute inset-0 ring-2 ring-primary rounded-sm animate-gentle-pulse" />}
+            {accessibilitySettings.isHighContrast && (
+              <span className="relative z-10 text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">▲</span>
+            )}
+          </div>
+        );
       case 'star':
-        return <div className={`${size} relative`} style={shapeStyle}>
-          <div className={`absolute inset-0 ${colorClass} ${contrastClasses}`}
-               style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
-          {isHighlighted && <div className="absolute inset-0 ring-4 ring-primary rounded-sm" />}
-        </div>;
+        return (
+          <div 
+            className={`${size} relative flex items-center justify-center flex-shrink-0`} 
+            style={{ minWidth: '4rem', minHeight: '4rem' }}
+            title={`${color} star`}
+            aria-label={`${color} star shape`}
+          >
+            <div 
+              className={`absolute inset-1 ${contrastClasses} transition-all duration-300`}
+              style={{ 
+                clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
+                backgroundColor: getColorStyle(color)
+              }} 
+            />
+            {isHighlighted && <div className="absolute inset-0 ring-2 ring-primary rounded-sm animate-gentle-pulse" />}
+            {accessibilitySettings.isHighContrast && (
+              <span className="relative z-10 text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">★</span>
+            )}
+          </div>
+        );
+      default:
+        return null;
     }
   };
 
@@ -343,6 +414,16 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
         enabled={accessibilitySettings.voiceCommands}
         onCommand={handleVoiceCommand}
       />
+
+      {/* Voice Recognition Status Indicator */}
+      {accessibilitySettings.voiceCommands && (
+        <div className="fixed top-4 right-4 z-50">
+          <div className="bg-primary/10 border border-primary/20 rounded-lg px-3 py-2 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">🎤 Voice Active</span>
+          </div>
+        </div>
+      )}
 
       {/* Switch Input Component */}
       <SwitchInput
@@ -366,7 +447,7 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
             <div className="text-sm text-muted-foreground mt-2 space-y-1">
               <p>Press numbers 1-{options.length} or click to select • Press R to repeat • Press H for help</p>
               {accessibilitySettings.voiceCommands && (
-                <p>🎤 Voice: "Select [number]", "Repeat", "Help"</p>
+                <p>🎤 Voice: Say "1", "2", etc. or "Select 1", "Repeat", "Help"</p>
               )}
               {accessibilitySettings.switchInput && (
                 <p>🔄 Switch: Space to scan, Enter to select</p>
@@ -380,16 +461,16 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
       )}
 
       {/* Game options */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {options.map((piece, index) => (
           <Button
             key={piece.id}
             variant="outline"
             className={`
-              min-h-32 p-6 flex flex-col items-center gap-3 text-lg font-medium
-              hover:scale-105 transition-all duration-300 min-w-touch
+              min-h-36 p-4 flex flex-col items-center justify-center gap-3 text-lg font-medium
+              hover:scale-105 transition-all duration-300 min-w-touch min-h-touch
               ${celebrating && piece.shape === currentTarget?.shape && piece.color === currentTarget?.color 
-                ? 'animate-celebrate bg-success text-success-foreground' 
+                ? 'animate-celebrate bg-success/20 border-success border-2' 
                 : ''
               }
               ${currentHighlight === index ? 'ring-4 ring-primary bg-primary/10' : ''}
@@ -406,13 +487,13 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
               fontSize: accessibilitySettings.simplifiedUI ? '1.25rem' : '1rem',
             }}
           >
-            <div className="relative">
+            <div className="relative flex items-center justify-center w-20 h-20">
               {renderShape(piece.shape, piece.color, "w-16 h-16", currentHighlight === index)}
-              <span className="absolute -top-2 -left-2 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              <span className="absolute -top-1 -left-1 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold z-10">
                 {index + 1}
               </span>
             </div>
-            <span className="capitalize text-sm">
+            <span className="capitalize text-sm mt-2">
               {piece.color} {piece.shape}
             </span>
           </Button>

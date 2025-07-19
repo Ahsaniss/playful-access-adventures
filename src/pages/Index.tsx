@@ -12,7 +12,7 @@ const Index = () => {
   // Comprehensive accessibility settings
   const [accessibilitySettings, setAccessibilitySettings] = useState<AccessibilitySettingsType>({
     audioEnabled: true,
-    voiceCommands: false,
+    voiceCommands: true, // Enable voice commands by default
     isHighContrast: false,
     fontSize: 100,
     animationSpeed: 1,

@@ -133,3 +133,72 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Game shape styles */
+  .game-shape {
+    @apply transition-all duration-300 ease-in-out;
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+  }
+
+  .game-shape:hover {
+    @apply scale-110;
+    filter: brightness(1.1);
+  }
+
+  .game-shape.highlighted {
+    @apply ring-4 ring-primary;
+    animation: gentle-pulse 2s ease-in-out infinite;
+  }
+
+  /* Ensure proper touch targets */
+  .min-w-touch {
+    min-width: var(--touch-target);
+  }
+
+  .min-h-touch {
+    min-height: var(--touch-target);
+  }
+}
+
+@layer utilities {
+  /* Custom animations */
+  @keyframes gentle-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+  }
+
+  @keyframes celebrate {
+    0% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.1) rotate(5deg); }
+    50% { transform: scale(1.2) rotate(-5deg); }
+    75% { transform: scale(1.1) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  .animate-celebrate {
+    animation: celebrate 0.6s ease-in-out;
+  }
+
+  .animate-gentle-pulse {
+    animation: gentle-pulse 2s ease-in-out infinite;
+  }
+
+  /* High contrast mode utilities */
+  .high-contrast .game-shape {
+    @apply border-4 border-black;
+    filter: contrast(1.5);
+  }
+
+  /* Focus visible improvements */
+  .focus-visible {
+    @apply outline-none ring-4 ring-primary ring-offset-2;
+  }
+}
