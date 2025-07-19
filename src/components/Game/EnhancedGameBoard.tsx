@@ -487,7 +487,7 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
             }}
             aria-label={`Option ${index + 1}: ${piece.color} ${piece.shape}${currentHighlight === index ? ' - Currently highlighted' : ''}`}
           >
-          >
+          
             <div className="flex flex-col items-center justify-center gap-2 sm:gap-3 w-full h-full">
               {/* Number badge at the top */}
               <div className="flex-shrink-0">
