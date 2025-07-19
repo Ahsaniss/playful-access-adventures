@@ -467,7 +467,7 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
             key={piece.id}
             variant="outline"
             className={`
-              min-h-36 p-4 flex flex-col items-center justify-center gap-3 text-lg font-medium
+              min-h-40 p-4 flex flex-col items-center justify-center gap-2 text-lg font-medium
               hover:scale-105 transition-all duration-300 min-w-touch min-h-touch
               ${celebrating && piece.shape === currentTarget?.shape && piece.color === currentTarget?.color 
                 ? 'animate-celebrate bg-success/20 border-success border-2' 
@@ -487,11 +487,16 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
               fontSize: accessibilitySettings.simplifiedUI ? '1.25rem' : '1rem',
             }}
           >
-            <div className="relative flex items-center justify-center w-20 h-20">
-              {renderShape(piece.shape, piece.color, "w-16 h-16", currentHighlight === index)}
-              <span className="absolute -top-1 -left-1 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold z-10">
+            <div className="relative flex flex-col items-center gap-2">
+              {/* Number badge at the top */}
+              <span className="bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold shadow-lg">
                 {index + 1}
               </span>
+              
+              {/* Shape container */}
+              <div className="flex items-center justify-center w-20 h-20">
+                {renderShape(piece.shape, piece.color, "w-16 h-16", currentHighlight === index)}
+              </div>
             </div>
             <span className="capitalize text-sm mt-2">
               {piece.color} {piece.shape}
