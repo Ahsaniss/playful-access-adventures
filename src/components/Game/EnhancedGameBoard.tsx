@@ -329,8 +329,6 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
     
     const shapeStyle = {
       backgroundColor: getColorStyle(color),
-      minWidth: '4rem',
-      minHeight: '4rem',
     };
 
     switch (shape) {
@@ -343,7 +341,7 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
             aria-label={`${color} circle shape`}
           >
             {accessibilitySettings.isHighContrast && (
-              <span className="text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">●</span>
+              <span className="text-white font-bold text-xs sm:text-sm drop-shadow-lg" aria-hidden="true">●</span>
             )}
           </div>
         );
@@ -356,7 +354,7 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
             aria-label={`${color} square shape`}
           >
             {accessibilitySettings.isHighContrast && (
-              <span className="text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">■</span>
+              <span className="text-white font-bold text-xs sm:text-sm drop-shadow-lg" aria-hidden="true">■</span>
             )}
           </div>
         );
@@ -364,7 +362,6 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
         return (
           <div 
             className={`${size} relative flex items-center justify-center flex-shrink-0`} 
-            style={{ minWidth: '4rem', minHeight: '4rem' }}
             title={`${color} triangle`}
             aria-label={`${color} triangle shape`}
           >
@@ -375,9 +372,9 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
                 backgroundColor: getColorStyle(color)
               }} 
             />
-            {isHighlighted && <div className="absolute inset-0 ring-2 ring-primary rounded-sm animate-gentle-pulse" />}
+            {isHighlighted && <div className="absolute inset-0 ring-1 sm:ring-2 ring-primary rounded-sm animate-gentle-pulse" />}
             {accessibilitySettings.isHighContrast && (
-              <span className="relative z-10 text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">▲</span>
+              <span className="relative z-10 text-white font-bold text-xs sm:text-sm drop-shadow-lg" aria-hidden="true">▲</span>
             )}
           </div>
         );
@@ -385,7 +382,6 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
         return (
           <div 
             className={`${size} relative flex items-center justify-center flex-shrink-0`} 
-            style={{ minWidth: '4rem', minHeight: '4rem' }}
             title={`${color} star`}
             aria-label={`${color} star shape`}
           >
@@ -396,9 +392,9 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
                 backgroundColor: getColorStyle(color)
               }} 
             />
-            {isHighlighted && <div className="absolute inset-0 ring-2 ring-primary rounded-sm animate-gentle-pulse" />}
+            {isHighlighted && <div className="absolute inset-0 ring-1 sm:ring-2 ring-primary rounded-sm animate-gentle-pulse" />}
             {accessibilitySettings.isHighContrast && (
-              <span className="relative z-10 text-white font-bold text-sm drop-shadow-lg" aria-hidden="true">★</span>
+              <span className="relative z-10 text-white font-bold text-xs sm:text-sm drop-shadow-lg" aria-hidden="true">★</span>
             )}
           </div>
         );
@@ -408,7 +404,7 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-6" style={getGameStyle()}>
+    <div className="min-h-screen bg-background p-2 sm:p-4 space-y-4 sm:space-y-6" style={getGameStyle()}>
       {/* Voice Control Component */}
       <VoiceControl 
         enabled={accessibilitySettings.voiceCommands}
@@ -417,10 +413,10 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
 
       {/* Voice Recognition Status Indicator */}
       {accessibilitySettings.voiceCommands && (
-        <div className="fixed top-4 right-4 z-50">
-          <div className="bg-primary/10 border border-primary/20 rounded-lg px-3 py-2 flex items-center gap-2">
+        <div className="fixed top-2 right-2 sm:top-4 sm:right-4 z-50">
+          <div className="bg-primary/10 border border-primary/20 rounded-lg px-2 py-1 sm:px-3 sm:py-2 flex items-center gap-1 sm:gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium">🎤 Voice Active</span>
+            <span className="text-xs sm:text-sm font-medium">🎤 Voice Active</span>
           </div>
         </div>
       )}
@@ -435,22 +431,26 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
 
       {/* Target display */}
       {currentTarget && (
-        <Card className="p-6 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Find this shape:</h2>
-          <div className="flex justify-center mb-4">
-            {renderShape(currentTarget.shape, currentTarget.color, "w-24 h-24")}
+        <Card className="p-3 sm:p-6 text-center mx-2 sm:mx-0">
+          <h2 className="text-lg sm:text-2xl font-semibold mb-2 sm:mb-4">Find this shape:</h2>
+          <div className="flex justify-center mb-2 sm:mb-4">
+            {renderShape(currentTarget.shape, currentTarget.color, "w-16 h-16 sm:w-24 sm:h-24")}
           </div>
-          <p className="text-xl font-medium capitalize">
+          <p className="text-base sm:text-xl font-medium capitalize">
             {currentTarget.color} {currentTarget.shape}
           </p>
           {!accessibilitySettings.simplifiedUI && (
-            <div className="text-sm text-muted-foreground mt-2 space-y-1">
-              <p>Press numbers 1-{options.length} or click to select • Press R to repeat • Press H for help</p>
+            <div className="text-xs sm:text-sm text-muted-foreground mt-2 space-y-1">
+              <p className="hidden sm:block">Press numbers 1-{options.length} or click to select • Press R to repeat • Press H for help</p>
+              <p className="sm:hidden">Tap to select • {options.length} options</p>
               {accessibilitySettings.voiceCommands && (
-                <p>🎤 Voice: Say "1", "2", etc. or "Select 1", "Repeat", "Help"</p>
+                <p className="hidden sm:block">🎤 Voice: Say "1", "2", etc. or "Select 1", "Repeat", "Help"</p>
+              )}
+              {accessibilitySettings.voiceCommands && (
+                <p className="sm:hidden">🎤 Say "1", "2", etc.</p>
               )}
               {accessibilitySettings.switchInput && (
-                <p>🔄 Switch: Space to scan, Enter to select</p>
+                <p className="hidden sm:block">🔄 Switch: Space to scan, Enter to select</p>
               )}
               {accessibilitySettings.autoAdvance && (
                 <p>⏱️ Auto-advance in {accessibilitySettings.autoAdvanceTime}s</p>
@@ -461,19 +461,21 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
       )}
 
       {/* Game options */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-2 sm:px-0">
         {options.map((piece, index) => (
           <Button
             key={piece.id}
             variant="outline"
             className={`
-              min-h-40 p-4 flex flex-col items-center justify-center gap-2 text-lg font-medium
+              min-h-32 sm:min-h-36 md:min-h-40 p-2 sm:p-3 md:p-4 
+              flex flex-col items-center justify-center gap-1 sm:gap-2 
+              text-sm sm:text-base md:text-lg font-medium
               hover:scale-105 transition-all duration-300 min-w-touch min-h-touch
               ${celebrating && piece.shape === currentTarget?.shape && piece.color === currentTarget?.color 
                 ? 'animate-celebrate bg-success/20 border-success border-2' 
                 : ''
               }
-              ${currentHighlight === index ? 'ring-4 ring-primary bg-primary/10' : ''}
+              ${currentHighlight === index ? 'ring-2 sm:ring-4 ring-primary bg-primary/10' : ''}
             `}
             onClick={() => handlePieceClick(piece)}
             onKeyDown={(e) => {
@@ -484,22 +486,25 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
             }}
             aria-label={`Option ${index + 1}: ${piece.color} ${piece.shape}${currentHighlight === index ? ' - Currently highlighted' : ''}`}
             style={{
-              fontSize: accessibilitySettings.simplifiedUI ? '1.25rem' : '1rem',
+              fontSize: accessibilitySettings.simplifiedUI ? '1.1rem' : '0.9rem',
             }}
           >
-            <div className="relative flex flex-col items-center gap-2">
+            <div className="relative flex flex-col items-center gap-1 sm:gap-2">
               {/* Number badge at the top */}
-              <span className="bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold shadow-lg">
+              <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 flex items-center justify-center text-xs sm:text-sm font-bold shadow-lg">
                 {index + 1}
               </span>
               
               {/* Shape container */}
-              <div className="flex items-center justify-center w-20 h-20">
-                {renderShape(piece.shape, piece.color, "w-16 h-16", currentHighlight === index)}
+              <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20">
+                {renderShape(piece.shape, piece.color, "w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16", currentHighlight === index)}
               </div>
             </div>
-            <span className="capitalize text-sm mt-2">
-              {piece.color} {piece.shape}
+            <span className="capitalize text-xs sm:text-sm mt-1">
+              {accessibilitySettings.simplifiedUI ? 
+                `${piece.color.charAt(0).toUpperCase()} ${piece.shape.charAt(0).toUpperCase()}` : 
+                `${piece.color} ${piece.shape}`
+              }
             </span>
           </Button>
         ))}
@@ -507,9 +512,10 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
 
       {/* Enhanced Instructions */}
       {!accessibilitySettings.simplifiedUI && (
-        <Card className="p-4 text-center max-w-2xl mx-auto">
-          <p className="text-muted-foreground">
-            🎯 Multi-input support • 🔊 Enhanced audio • ♿ Full accessibility • ⌨️ Keyboard + Voice + Switch
+        <Card className="p-3 sm:p-4 text-center max-w-2xl mx-auto mx-2 sm:mx-auto">
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            <span className="hidden sm:inline">🎯 Multi-input support • 🔊 Enhanced audio • ♿ Full accessibility • ⌨️ Keyboard + Voice + Switch</span>
+            <span className="sm:hidden">🎯 Accessible Gaming • 🔊 Voice Commands • ♿ Inclusive Design</span>
           </p>
         </Card>
       )}
