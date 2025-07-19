@@ -461,16 +461,17 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
       )}
 
       {/* Game options */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-2 sm:px-0">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-7 max-w-6xl mx-auto px-4 sm:px-6 md:px-4">
         {options.map((piece, index) => (
           <Button
             key={piece.id}
             variant="outline"
             className={`
-              min-h-32 sm:min-h-36 md:min-h-40 p-2 sm:p-3 md:p-4 
-              flex flex-col items-center justify-center gap-1 sm:gap-2 
+              min-h-44 sm:min-h-48 md:min-h-52 p-4 sm:p-5 md:p-6 
+              flex flex-col items-center justify-center gap-2 sm:gap-3 md:gap-4
               text-sm sm:text-base md:text-lg font-medium
               hover:scale-105 transition-all duration-300 min-w-touch min-h-touch
+              border-2 border-border rounded-xl overflow-hidden
               ${celebrating && piece.shape === currentTarget?.shape && piece.color === currentTarget?.color 
                 ? 'animate-celebrate bg-success/20 border-success border-2' 
                 : ''
@@ -485,27 +486,33 @@ export const EnhancedGameBoard: React.FC<EnhancedGameBoardProps> = ({
               }
             }}
             aria-label={`Option ${index + 1}: ${piece.color} ${piece.shape}${currentHighlight === index ? ' - Currently highlighted' : ''}`}
-            style={{
-              fontSize: accessibilitySettings.simplifiedUI ? '1.1rem' : '0.9rem',
-            }}
           >
-            <div className="relative flex flex-col items-center gap-1 sm:gap-2">
+          >
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-3 w-full h-full">
               {/* Number badge at the top */}
-              <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 flex items-center justify-center text-xs sm:text-sm font-bold shadow-lg">
-                {index + 1}
-              </span>
+              <div className="flex-shrink-0">
+                <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 flex items-center justify-center text-sm sm:text-base md:text-lg font-bold shadow-lg">
+                  {index + 1}
+                </span>
+              </div>
               
-              {/* Shape container */}
-              <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20">
-                {renderShape(piece.shape, piece.color, "w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16", currentHighlight === index)}
+              {/* Shape container - flexible */}
+              <div className="flex items-center justify-center flex-grow">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center">
+                  {renderShape(piece.shape, piece.color, "w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20", currentHighlight === index)}
+                </div>
+              </div>
+              
+              {/* Text label - fixed at bottom */}
+              <div className="flex-shrink-0 w-full text-center px-2">
+                <span className="capitalize text-sm sm:text-base md:text-lg font-medium leading-tight block">
+                  {accessibilitySettings.simplifiedUI ? 
+                    piece.color.slice(0,1).toUpperCase() + piece.shape.slice(0,1).toUpperCase() : 
+                    `${piece.color} ${piece.shape}`
+                  }
+                </span>
               </div>
             </div>
-            <span className="capitalize text-xs sm:text-sm mt-1">
-              {accessibilitySettings.simplifiedUI ? 
-                `${piece.color.charAt(0).toUpperCase()} ${piece.shape.charAt(0).toUpperCase()}` : 
-                `${piece.color} ${piece.shape}`
-              }
-            </span>
           </Button>
         ))}
       </div>
