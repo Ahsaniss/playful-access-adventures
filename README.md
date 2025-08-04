@@ -1,6 +1,6 @@
 
+
 <div align="center">
-  <img src="public/favicon.ico" alt="Inclusive Play Logo" width="80" />
   
   # 🎮 Inclusive Play: Experience Gaming Without Barriers
   
